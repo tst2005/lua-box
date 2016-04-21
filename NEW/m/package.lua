@@ -90,6 +90,7 @@ assert(rep == '/')
 	)
 	for c in gmatch(path, "[^;]+") do
 		c = gsub(c, quote_magics(LUA_PATH_MARK), name)
+		local io = self.parent.addons.fs
 		local f = io.open(c) -- FIXME: use virtual FS here ???
 		if f then
 			f:close()

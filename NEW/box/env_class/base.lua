@@ -88,6 +88,7 @@ function env_class:loadfile(filename)
 	if filename == nil then
 		return nil, "read from stdin no supported"
 	end
+	local io = self.addons.fs
 	local fd, _err = io.open(filename, "r")
 	if not fd then return nil end
 	local data=fd:read("*a")

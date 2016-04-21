@@ -25,3 +25,9 @@ e1:mk_self_g()
 assert( e1:eval("return _G") == ge1) -- still the same exposed table
 assert( e1:eval("return bar") == "bar" ) -- bar exists
 assert( e1:eval("return foo") == nil) -- foo does not exists anymore
+
+e1:evalfile("sample/global_write.lua")
+assert( e1:eval("return foo") == "FOO" )
+
+e1:load_addon("pkg", require "m.package")
+assert( e1.addons.pkg:require("sample.a").name == "mod a")

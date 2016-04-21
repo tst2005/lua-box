@@ -6,79 +6,13 @@ local load = require "mini.compat-env".load or _G.load
 local class = require "mini.class"
 local instance = class.instance
 
-local assertlevel = require "mini.assertlevel"
---local weaktable = require "mini.weaktable"
-
-local function tableproxy(meta)
-	return setmetatable({}, meta)
-end
-
-
 -- a basic empty env
-local env_class = class("env", {
-	init = function(self)
-		self.loadmode = "t" -- for load
-
-		local privenv = {} -- create a default empty privenv table
-		local pubenv = tableproxy({
-			__index = function(_, k)
-				return self.privenv[k]
-			end,
-			__newindex = function(_, k, v)
-				self.privenv[k] = v
-			end,
-			__metatable=false, -- locked
---			__pairs
---			__ipairs
-		})
-		self.privenv = privenv
-		self.pubenv = pubenv
-	end
-})
--- make a env to setup the virtual global env
-
-function env_class:set_privenv(env)
-	self.privenv = assertlevel(
-		type(env)=="table" and env,
-		"invalid env, must be a table",2
-	)
-end
-
-function env_class:mk_self_g()
-	self.privenv._G = self.pubenv -- expose the public env, not the private one
-end
-
-
-function env_class:set_loadmode(mode)
-	self.loadmode = assertlevel( (mode == "b" or mode == "t" or mode == "bt") and mode, "invalid mode", 2)
-end
-
-function env_class:get_loadmode()
-	return self.loadmode
-end
-
-function env_class:eval(something)
-	local f = load(
-		something,
-		something,
-		assertlevel(self.loadmode,	"virtual mode not set", 2),
-		assertlevel(self.pubenv,	"virtual env not set",  2)
-	)
-	return f()
-end
-
-function env_class:run(something)
-	return self:eval(something)
-end
-
--- run
--- runf
--- dostring
--- dofunction
-
+local env_class = require "box.env_class"
 
 local function new(...)
-	return instance(env_class, ...)
+	local i = instance(env_class, ...)
+	--i:load_addon("pkg", require "m.package")
+	return i
 end
 
 local M = {

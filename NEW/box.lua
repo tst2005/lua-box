@@ -10,9 +10,7 @@ local instance = class.instance
 local env_class = require "box.env_class"
 
 local function new(...)
-	local i = instance(env_class, ...)
-	--i:load_addon("pkg", require "m.package")
-	return i
+	return instance(env_class, ...)
 end
 
 local M = {

@@ -12,7 +12,6 @@ local format, gmatch, gsub = string.format, string.gmatch or string.gfind, strin
 
 
 local class = require "mini.class"
-local instance = assert(class.instance)
 local assertlevel = require "mini.assertlevel"
 
 -- this function is used to get the n-th line of the str, should be improved !!
@@ -34,14 +33,14 @@ end
 --end
 
 local pkg_class = class("pkg", {
-	init = function(self, parent, with_loaded, with_preloaded)
+	init = function(self, parent)
 		self.parent = assertlevel(
 			parent,
 			"you must provide the parent instance", 2
 		)
 		local _PACKAGE = {}
-		local _LOADED = with_loaded or {}
-		local _PRELOAD = with_preloaded or {}
+		local _LOADED = {}
+		local _PRELOAD = {}
 		local _SEARCHERS  = {}
 		_SEARCHERS[#_SEARCHERS+1] = function(...) return self:searcher_preload(...) end
 		_SEARCHERS[#_SEARCHERS+1] = function(...) return self:searcher_Lua(...) end
@@ -130,7 +129,7 @@ function pkg_class:searcher_Lua(name)
 	if not filename then
 		return false
 	end
-	local f, err = self.parent:loadfile(filename)
+	local f, err = self.parent.addons.load:loadfile(filename)
 	assertlevel(
 		f,
 		format("error loading module `%s' (%s)", name, err), 2
@@ -144,7 +143,6 @@ end
 local function iload(modname, searchers)
 	assertlevel(type(searchers) == "table", "`package.searchers' must be a table", 2)
 	local msg = ""
-assert( #searchers == 2)
 	for _, searcher in ipairs(searchers) do
 		local loader, param = searcher(modname)
 		if type(loader) == "function" then
@@ -200,11 +198,7 @@ function pkg_class:require(modname)
 	return p
 end
 
-local new = function(...)
-	return instance(pkg_class, ...)
-end
-
-return {new = new}
+return pkg_class
 
 -- ----------------------------------------------------------
 

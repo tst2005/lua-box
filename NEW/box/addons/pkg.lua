@@ -13,6 +13,7 @@ local format, gmatch, gsub = string.format, string.gmatch or string.gfind, strin
 
 local class = require "mini.class"
 local assertlevel = require "mini.assertlevel"
+local quote_magics = require "mini.quote_magics"
 
 -- this function is used to get the n-th line of the str, should be improved !!
 local function string_line(str, n)
@@ -66,11 +67,6 @@ local pkg_class = class("pkg", {
 		assert(#_SEARCHERS==2)
 	end,
 })
-
-local function quote_magics(str)
-	return "%"..str -- TODO: prefix each lua magic character by '%'
-	-- return str:gsub(["%^%$%(%)%%%.%[%]%*%+%-%?]", "%%%0")
-end
 
 --
 -- looks for a file `name' in given path

@@ -46,10 +46,12 @@ if compat.lua51 then
 			if chunk and env then setfenv(chunk,env) end
 			return chunk,err
 		end
---	else
---		compat.load = load
+	else
+		compat.load = _G.load
 	end
 --	compat.setfenv, compat.getfenv = setfenv, getfenv
+else
+	compat.load = _G.load
 end
 
 return compat

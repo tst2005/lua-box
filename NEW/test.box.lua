@@ -1,18 +1,26 @@
 local box = require "box"
 
-local e1 = box.new()
-e1:load_addon("load", require "box.addons.load")
+local e1 = box() -- box.new()
+e1 "load"
+assert( e1:addon("load") == e1("load") )
+
+assert( e1("load"):get_loadmode() == "t" )
 
 e1("load"):set_loadmode("b")
+assert( e1("load"):get_loadmode() == "b" )
+
 e1("load"):set_loadmode("bt")
+assert( e1("load"):get_loadmode() == "bt" )
+
 e1("load"):set_loadmode("t")
 assert( e1("load"):get_loadmode() == "t" )
 
 local pe1 = {foo="foo"} -- private env 1
 e1:set_privenv(pe1)
-assert(e1("load"):eval "return foo" == "foo")
+assert(e1("load"):eval("return foo") == "foo")
 
-assert(e1("load"):eval "return _G" == nil)
+-- by default the env is really empty, where is no way to go the global table it self
+assert(e1("load"):eval("return _G") == nil)
 
 e1:mk_self_g()
 local ge1 = e1("load"):eval "return _G"
@@ -28,12 +36,12 @@ assert( e1("load"):eval("return _G") == ge1) -- still the same exposed table
 assert( e1("load"):eval("return bar") == "bar" ) -- bar exists
 assert( e1("load"):eval("return foo") == nil) -- foo does not exists anymore
 
-e1:load_addon("fs", require "box.addons.fs")
+e1:addon("fs") -- require "box.addons.fs")
 
 
 e1("load"):evalfile("sample/global_write.lua")
 assert( e1("load"):eval("return foo") == "FOO" )
 
 
-e1:load_addon("pkg", require "box.addons.package")
+e1:addon("pkg") -- require "box.addons.pkg"
 assert( e1("pkg"):require("sample.a").name == "mod a")

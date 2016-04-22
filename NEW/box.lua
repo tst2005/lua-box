@@ -14,7 +14,6 @@ end
 -- a basic empty env
 local box_class = class("box", {
 	init = function(self)
-
 		self.privenv = {} -- create a default empty privenv table
 		local mt = {
 			__index = function(_, k)
@@ -24,6 +23,7 @@ local box_class = class("box", {
 				self.privenv[k] = v
 			end,
 			__metatable=false, -- locked
+			__pairs = function() return pairs(self.privenv) end,
 		}
 		self.pubenv = new_tableproxy(mt)
 		self.pubmeta = mt -- allow to internal modification even the metatable has a __metatable
@@ -58,6 +58,7 @@ function box_class:addon(name)
 	local ao = self.addons[name]
 	return ao or self:_load_addon(name, require("box.addons."..name))
 end
+
 
 function box_class:set_privenv(env)
 	self.privenv = assertlevel(

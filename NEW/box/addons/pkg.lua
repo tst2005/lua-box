@@ -33,12 +33,15 @@ end
 --	return function(...) return self[meth](self, ...) end
 --end
 
-local pkg_class = class("pkg", {
+local pkg_class = class("box.pkg", {
 	init = function(self, parent)
 		self.parent = assertlevel(
 			parent,
 			"you must provide the parent instance", 2
 		)
+		parent:addon("fs")	-- for :exists()
+		parent:addon("load")	-- for :loadfile()
+
 		local _PACKAGE = {}
 		local _LOADED = {}
 		local _PRELOAD = {}
@@ -85,8 +88,7 @@ assert(rep == '/')
 	)
 	for c in gmatch(path, "[^;]+") do
 		c = gsub(c, quote_magics(LUA_PATH_MARK), name)
-		local io = self.parent.addons.fs
-		local f = io.open(c) -- FIXME: use virtual FS here ???
+		local f = self.parent:addon("fs"):open(c)
 		if f then
 			f:close()
 			return c
@@ -125,10 +127,10 @@ function pkg_class:searcher_Lua(name)
 	if not filename then
 		return false
 	end
-	local f, err = self.parent.addons.load:loadfile(filename)
+	local f, err = self.parent:addon("load"):loadfile(filename)
 	assertlevel(
 		f,
-		format("error loading module `%s' (%s)", name, err), 2
+		format("error loading module `%s' (%s)", name, tostring(err)), 2
 	)
 	return f
 end

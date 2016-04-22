@@ -1,17 +1,16 @@
 
 local class = require "mini.class"
 
-----local compat_env = require "featured" "compat-env"
---local load = require "featured" "minimal.compat-env-like52".load or _G.load
-local load = require "mini.compat-env".load or _G.load
+local load = assert( require "mini.compat-env".load )
 
 local assertlevel = require "mini.assertlevel"
 
-local load_class = class("box.addon.load", {
+local load_class = class("box.load", {
 	init = function(self, parent)
-		assert( type(parent) )
+		assert( type(parent) == "table" )
 		self.parent = parent
 		self.loadmode = "t"
+		parent:addon("fs")
 	end,
 })
 
@@ -35,32 +34,19 @@ function load_class:load(something) -- return a function to execute
 	)
 end
 
-
-function load_class:eval(something)
-	return self:load(something)()
-end
-
 function load_class:loadfile(filename)
 	if filename == nil then
-		return nil, "read from stdin no supported"
+		return nil, "read from stdin is not supported"
 	end
-	local fs = self.parent.addons.fs
+	local fs = self.parent:addon("fs")
 	local fd, _err = fs:open(filename, "r")
-	if not fd then return nil end
+	if not fd then return nil, "" end
 	local data=fd:read("*a")
 	fd:close()
-	return self:load(data)
+	local f = self:load(data)
+	return f, "no error?"
+	--return self:load(data)
 end
-
-
-function load_class:evalfile(filename)
-	return self:loadfile(filename)()
-end
-
--- run
--- runf
--- dostring
--- dofunction
 
 return load_class
 

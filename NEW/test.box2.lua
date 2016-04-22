@@ -4,6 +4,7 @@ local e1 = box()
 
 e1 "setup.stdenv.unsafe"
 e1 "setup.require"
+e1 "setup.load"
 
 local test = [[
 assert(_G._G == _G)
@@ -22,6 +23,9 @@ print("package content:", keys(require"package"))
 print("package.loaded:", keys(require"package".loaded))
 
 assert( require "sample.a".name == "mod a" )
+
+foo = "inside box"
+print( load("return foo", nil, "bt")() )
 ]]
 
 print("==== inside box ====")

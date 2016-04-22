@@ -2,14 +2,22 @@ local box = require "box"
 
 local e1 = box()
 
-e1 "setup.stdenv.unsafe"
+e1 "setup.stdenv"
 e1 "setup.require"
 e1 "setup.load"
+
+e1("setup.id"):configure(function(id)
+	id:getreg("table").offset = 0x14b1e00 -- 0xtable00
+	id:getreg("function").offset = 0x133700
+end)
+	
+
+
 
 local test = [[
 assert(_G._G == _G)
 
-print( "_G =", _G, "require =", require, "require('package') =", require "package")
+print( "_G =", tostring(_G), _G, "require =", require, "require('package') =", require "package")
 
 local function keys(t)
 	local r = {}

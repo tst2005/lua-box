@@ -39,7 +39,7 @@ local box_class = class("box", {
 	end
 })
 
-function box_class:_load_addon(name, mod)
+function box_class:_load_addon(name, mod, ...)
 	local ao = self.addons[name]
 	if not ao then
 		ao = instance(
@@ -47,16 +47,16 @@ function box_class:_load_addon(name, mod)
 				type(mod)=="table" and mod,
 				"mod must be class object", 2
 			),
-			self
+			self, ...
 		)
 		self.addons[name] = ao
 	end
 	return ao
 end
 
-function box_class:addon(name)
+function box_class:addon(name, ...)
 	local ao = self.addons[name]
-	return ao or self:_load_addon(name, require("box.addons."..name))
+	return ao or self:_load_addon(name, require("box.addons."..name), ...)
 end
 
 

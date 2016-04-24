@@ -4,7 +4,7 @@ local class = require "mini.class"
 local eval_class = class("box.eval", {
 	init = function(self, parent)
 		assert( type(parent) == "table" )
-		self.loadaddon = assert( parent:addon("load") )
+		self.loadaddon = assert( parent:addon("loads") )
 		self.parent = parent
 
 		local mt = getmetatable(self) or setmetatable(self, {}) and getmetatable(self)
@@ -24,11 +24,7 @@ function eval_class:eval(something)
 end
 
 function eval_class:evalfile(filename)
---	local p = self.parent
---	local l = assert(p:addon("load"))
---	assert(l.loadfile)
---	return assert( l:loadfile(filename), "loadfile fail")()
-	return self.parent:addon("load"):loadfile(filename)()
+	return self.parent:addon("loads"):dofile(filename)
 end
 
 -- run

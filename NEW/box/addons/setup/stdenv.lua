@@ -1,38 +1,45 @@
 
 local class = require "mini.class"
 
-local assertlevel = require "mini.assertlevel"
-local tcopy = require "mini.tcopy"
-local table_concat = table.concat
-
-local safe_stdenv = class("box.setup.stdenv", {
+return class("box.setup.stdenv", {
 	init = function(self, parent)
 		assert( type(parent) == "table" )
 		self.parent = parent
-		--parent:addon("pkg")
 
 		local privenv = parent.privenv
+
+		parent:addon("setup.g.require")
+		parent:addon("setup.m.package")
+		
+		parent:addon("setup.m.global")
+		parent:addon("setup.g.global")
+
 		privenv.assert = _G.assert
+		privenv.error = _G.error
+		privenv.pcall = _G.pcall
+
 		privenv.pairs  = _G.pairs
 		privenv.ipairs = _G.ipairs
 		privenv.next   = _G.next
 		privenv.tonumber = _G.tonumber
 
 --		parent:addon("setup.id") -- custom format
+
 		parent:addon("setup.g.print")
 		parent:addon("setup.g.tostring")
 
-		local table = tcopy(table, {})
-		local string = _G.string -- unsafe (side channel attack of string metatable)
+		parent:addon("setup.g.load")
+		parent:addon("setup.g.loadfile")
+		parent:addon("setup.g.dofile")
 
-		local pkg = parent:addon("pkg")
-		pkg._LOADED.table = table
-		privenv.table = table
+		parent:addon("setup.m.string")
+		parent:addon("setup.g.string")
 
-		pkg._LOADED.string = string
-		privenv.string  = _G.string
+		parent:addon("setup.m.table")
+		parent:addon("setup.g.table")
+
+		parent:addon("setup.m.debug")
+
+
 	end,
 })
-
-return safe_stdenv
-

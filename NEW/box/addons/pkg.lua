@@ -40,7 +40,7 @@ local pkg_class = class("box.pkg", {
 			"you must provide the parent instance", 2
 		)
 		parent:addon("fs")	-- for :exists()
-		parent:addon("load")	-- for :loadfile()
+		parent:addon("loads")	-- for :loadfile()
 
 		local _PACKAGE = {}
 		local _LOADED = {}
@@ -127,7 +127,7 @@ function pkg_class:searcher_Lua(name)
 	if not filename then
 		return false
 	end
-	local f, err = self.parent:addon("load"):loadfile(filename)
+	local f, err = self.parent:addon("loads"):loadfile(filename)
 	assertlevel(
 		f,
 		format("error loading module `%s' (%s)", name, tostring(err)), 2

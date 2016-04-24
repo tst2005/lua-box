@@ -1,0 +1,1 @@
+t = setmetatable({}, function() end)

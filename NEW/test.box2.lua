@@ -3,8 +3,8 @@ local box = require "box"
 local e1 = box()
 
 e1 "setup.stdenv"
-e1 "setup.require"
-e1 "setup.load"
+--e1 "setup.require"
+--e1 "setup.load"
 
 e1("setup.id"):configure(function(id)
 	id:getreg("table").offset = 0x14b1e00 -- 0xtable00
@@ -13,11 +13,11 @@ end)
 	
 
 
-
+-----------------------------------------------------------
 local test = [[
 assert(_G._G == _G)
 
-print( "_G =", tostring(_G), _G, "require =", require, "require('package') =", require "package")
+print( "_G =", _G, "require =", require, "require('package') =", require "package")
 
 local function keys(t)
 	local r = {}
@@ -29,12 +29,21 @@ end
 print("_G content:", keys(_G))
 print("package content:", keys(require"package"))
 print("package.loaded:", keys(require"package".loaded))
+print("package.preload:", keys(require"package".preload))
 
 assert( require "sample.a".name == "mod a" )
 
 foo = "inside box"
 print( load("return foo", nil, "bt")() )
+
+_BOX = (_BOX or 0)+1
+print("box inception:", _BOX)
+if _BOX <= 2 then
+	dofile("test.box2.lua")
+end
+print("END")
 ]]
+-----------------------------------------------------------
 
 print("==== inside box ====")
 e1 "eval" (test)

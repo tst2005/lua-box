@@ -10,16 +10,16 @@ e1 "eval"
 assert( e1:addon("eval") == e1("eval") )
 
 -- the default load mode is "t" (no bytecode, only lua code)
-assert( e1("load"):get_loadmode() == "t" )
+assert( e1("loads"):get_loadmode() == "t" )
 
-e1("load"):set_loadmode("b")
-assert( e1("load"):get_loadmode() == "b" )
+e1("loads"):set_loadmode("b")
+assert( e1("loads"):get_loadmode() == "b" )
 
-e1("load"):set_loadmode("bt")
-assert( e1("load"):get_loadmode() == "bt" )
+e1("loads"):set_loadmode("bt")
+assert( e1("loads"):get_loadmode() == "bt" )
 
-e1("load"):set_loadmode("t")
-assert( e1("load"):get_loadmode() == "t" )
+e1("loads"):set_loadmode("t")
+assert( e1("loads"):get_loadmode() == "t" )
 
 
 local pe1 = {foo="foo"} -- private env 1

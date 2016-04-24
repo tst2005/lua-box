@@ -1,4 +1,5 @@
 
+error("DISABLED", 2)
 local class = require "mini.class"
 
 local assertlevel = require "mini.assertlevel"

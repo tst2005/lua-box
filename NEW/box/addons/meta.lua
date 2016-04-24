@@ -24,6 +24,7 @@ stdin:1: cannot change a protected metatable
 ]]--
 
 local class = require "mini.class"
+local assertlevel = require "mini.assertlevel"
 
 local native_getmetatable, native_setmetatable = _G.getmetatable, _G.setmetatable
 local native_debug_getmetatable, native_debug_setmetatable

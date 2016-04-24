@@ -1,19 +1,33 @@
 local class = require "mini.class"
-local fs_class = class("fs", {})
+local assertlevel = require "mini.assertlevel"
 
-local io = require "io"
+local native_io = require "io"
 
-function fs_class:open(filename, mode)
-	assert( type(self) ~= "string", "Use fs:open(), not fs.open()")
-	return io.open(filename, mode)
+local c = class("fs", {
+	init = function(self, parent)
+		assertlevel( type(parent) == "table", "parent", 2)
+		self.parent = parent
+	end,
+})
+
+
+function c:open(filename, mode)
+	assertlevel(
+		type(self) ~= "string",
+		"Use fs:open(), not fs.open()", 2
+	)
+	return native_io.open(filename, mode)
 end
 
-function fs_class:exists(filename)
-	assert( type(self) ~= "string", "Use fs:open(), not fs.open()")
-	local fd = io.open(filename, "r")
+function c:exists(filename)
+	assertlevel(
+		type(self) ~= "string",
+		"Use fs:open(), not fs.open()", 2
+	)
+	local fd = native_io.open(filename, "r")
 	local ok = not not fd
 	fd:close()
 	return ok
 end
 
-return fs_class
+return c

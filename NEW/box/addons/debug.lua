@@ -1,12 +1,13 @@
 
 local class = require "mini.class"
 local tcopy = require "mini.tcopy"
+local assertlevel = require "mini.assertlevel"
 
 local native_debug = require "debug"
 
-local debug_class = class("box.debug", {
+local c = class("box.debug", {
 	init = function(self, parent)
-		assert( type(parent) == "table" )
+		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
 
 		local meta = parent:addon("meta")
@@ -22,5 +23,4 @@ local debug_class = class("box.debug", {
 	end,
 })
 
-return debug_class
-
+return c

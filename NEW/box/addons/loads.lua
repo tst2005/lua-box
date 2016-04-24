@@ -1,11 +1,11 @@
 
 local class = require "mini.class"
 local assertlevel = require "mini.assertlevel"
-local load = assert( require "mini.compat-env".load )
+local load = assert( require "mini.compat-env".load, "mini.compat-env.load")
 
 local c = class("box.loads", {
 	init = function(self, parent)
-		assert( type(parent) == "table" )
+		assert( type(parent) == "table" , "parent")
 		self.parent = parent
 		self.loadmode = "t"
 		parent:addon("fs")
@@ -13,10 +13,12 @@ local c = class("box.loads", {
 })
 
 function c:set_loadmode(mode)
-	self.loadmode = assertlevel(
-		(mode == "b" or mode == "t" or mode == "bt") and mode,
+	--self.loadmode = 
+	assertlevel(
+		(mode == "b" or mode == "t" or mode == "bt"),
 		"invalid mode", 2
 	)
+	self.loadmode = mode
 end
 
 function c:get_loadmode()
@@ -24,6 +26,12 @@ function c:get_loadmode()
 end
 
 function c:load(something, source, _mode, env) -- return a function to execute
+
+--print("@load@", "mode=", self.loadmode, "original_in_env=", env, "use_in_env=", env ~= nil and env or self.parent.pubenv)
+--print("------------>8---------")
+--local prefix = "\tcode:\t"
+--print(prefix..something:gsub("\n", "\n"..prefix))
+--print("------------>8---------")
 	return load(
 		something,
 		source ~= nil and source or something,
@@ -68,7 +76,9 @@ function c:dofile(filename)
 		type(filename) == "string",
 		"box: read from stdin is not supported", 2
 	)
-	return self:loadfile(filename)()
+	local f, err = self:loadfile(filename)
+	assertlevel(f, err, 2)
+	return f()
 end
 
 return c

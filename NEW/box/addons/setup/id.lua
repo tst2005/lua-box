@@ -5,13 +5,13 @@ local assertlevel = require "mini.assertlevel"
 
 local c = class("box.setup.id", {
 	init = function(self, parent, dispatch, regs)
-		assert( type(parent) == "table" )
+		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
 	end,
 })
 
 function c:configure(handler)
-	assert(handler)
+	assertlevel(handler, "handler", 2)
 	local id = self.parent:addon("id")
 	handler(id)
 end

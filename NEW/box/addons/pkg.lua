@@ -67,7 +67,7 @@ local pkg_class = class("box.pkg", {
 		package.preload		= _PRELOAD
 		package.searchers	= _SEARCHERS
 		package.searchpath	= function(...) return self:_searchpath(...) end
-		assert(#_SEARCHERS==2)
+		assert(#_SEARCHERS==2, "_SEARCHERS contains != 2 searchers")
 	end,
 })
 
@@ -78,7 +78,7 @@ function pkg_class:_searchpath(name, path, sep, rep)
 	local _PACKAGE = self._PACKAGE
 	sep = sep or '.'
 	rep = rep or string_line(_PACKAGE.config, 1) or '/'
-assert(rep == '/')
+--assert(rep == '/')
 	local LUA_PATH_MARK = '?'
 	local LUA_DIRSEP = '/'
 	name = gsub(name, quote_magics(sep), LUA_DIRSEP) -- FIXME: use sep ?
@@ -167,14 +167,12 @@ function pkg_class:require(modname)
 			"bad argument #1 to `require' (string expected, got "..t..")", 2
 		)
 	end
-
 	modname = checkmodname(modname)
 	local _LOADED = self._LOADED
 	local p = _LOADED[modname]
 	if p then -- is it there?
 		return p -- package is already loaded
 	end
-
 	local loader, param = iload(modname, self._SEARCHERS)
 
 	local res = loader(modname, param)

@@ -1,12 +1,13 @@
 
 local class = require "mini.class"
-local instance = assert( class.instance )
+local instance = assert( class.instance, "class.instance")
+local assertlevel = require "mini.assertlevel"
 local t_copy = require "mini.tcopy"
 local new_weaktable = require "mini.weaktable"
 
-local format = assert( require"string".format )
+local format = assert( require"string".format, "require 'string'.format")
 local native_tostring = _G.tostring -- backup the global original value
-local select = assert(_G.select)
+local select = assert(_G.select, "_G.select")
 
 local reg_class = class("reg", {
 	init = function(self)

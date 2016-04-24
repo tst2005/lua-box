@@ -1,15 +1,15 @@
 
 local class = require "mini.class"
+local assertlevel = require "mini.assertlevel"
 
-local eval_class = class("box.eval", {
+local c = class("box.eval", {
 	init = function(self, parent)
-		assert( type(parent) == "table" )
-		self.loadaddon = assert( parent:addon("loads") )
+		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
 
 		local mt = getmetatable(self) or setmetatable(self, {}) and getmetatable(self)
 		mt.__call = function(_self, stuff)
-			assert(self==_self)
+			assertlevel( self==_self, "self!=_self", 2)
 			if type(stuff) == "table" and #stuff == 1 and type(stuff[1]) == "string" then
 				return _self:evalfile(stuff[1])
 			else
@@ -19,11 +19,12 @@ local eval_class = class("box.eval", {
 	end,
 })
 
-function eval_class:eval(something)
-	return self.loadaddon:load(something)()
+function c:eval(something)
+	local f = self.parent:addon("loads"):load(something)
+	return f()
 end
 
-function eval_class:evalfile(filename)
+function c:evalfile(filename)
 	return self.parent:addon("loads"):dofile(filename)
 end
 
@@ -32,5 +33,5 @@ end
 -- dostring
 -- dofunction
 
-return eval_class
+return c
 

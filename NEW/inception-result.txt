@@ -1,0 +1,29 @@
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370101	require('package') =	table: 0x00010002
+inception:  BEGIN 1
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370201	require('package') =	table: 0x00020002
+inception:   BEGIN 2
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370301	require('package') =	table: 0x00030002
+inception:    BEGIN 3
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370401	require('package') =	table: 0x00040002
+inception:     BEGIN 4
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370501	require('package') =	table: 0x00050002
+inception:      BEGIN 5
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370601	require('package') =	table: 0x00060002
+inception:       BEGIN 6
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370701	require('package') =	table: 0x00070002
+inception:        BEGIN 7
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370801	require('package') =	table: 0x00080002
+inception:         BEGIN 8
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370901	require('package') =	table: 0x00090002
+inception:          BEGIN 9
+_G =	table: 0x1 [_G pub]	require =	function: 0x13370a01	require('package') =	table: 0x000a0002
+inception:           END 10
+inception:          END 9
+inception:         END 8
+inception:        END 7
+inception:       END 6
+inception:      END 5
+inception:     END 4
+inception:    END 3
+inception:   END 2
+inception:  END 1

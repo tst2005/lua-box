@@ -19,8 +19,8 @@ e1("setup.id"):configure(function(id)
 	--id:getreg("table").offset = 0x14b1e00 -- 0xtable00
 	id:getreg("table").fmt = "%s: 0x%08x"
 	id:getreg("table").offset = 0x10000 * e1.privenv._BOXLEVEL
-	
-	id:getreg("function").offset = 0x133700
+	--id:getreg("function").offset = 0x133700
+	id:getreg("function").offset = 0x13370000 + 0x100 * e1.privenv._BOXLEVEL
 end)
 
 
@@ -55,7 +55,7 @@ assert( load("return foo", nil, "t", {})() == nil )
 
 --local box = require "box"()
 
-if _BOXLEVEL < 100 then
+if _BOXLEVEL < 10 then
 	print("inception: "..(" "):rep(_BOXLEVEL or 0).."BEGIN ".._BOXLEVEL)
 	dofile("test.box3.lua")
 end

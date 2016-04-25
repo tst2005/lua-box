@@ -11,7 +11,7 @@ local c = class("box.debug", {
 		self.parent = parent
 
 		local meta = parent:addon("meta")
-		local getregistry = parent:addon("getregistry")
+		local getregistry = parent:addon("debug.getregistry")
 
 		--self.debug = tcopy(native_debug, {})
 		self.debug = {

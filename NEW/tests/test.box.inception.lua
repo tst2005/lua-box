@@ -1,8 +1,9 @@
 local box = require "box"
 
-local e1 = box()
-e1 "want.id.virtual"
-e1 "setup.stdenv"
+--local e1 = box { id="virtual", io="native", setup="default" }
+--e1() -- load wanted part
+
+local e1 = box()()
 
 --assert(e1.privenv.require"io")
 

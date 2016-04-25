@@ -4,9 +4,7 @@ local boxes = {}
 
 --loop to make lot of box instances
 for n=1,1000 do
-	local e1 = box()
-	e1 "want.id.virtual"
-	e1 "setup.stdenv"
+	local e1 = box{id="virtual"}()
 	boxes[#boxes+1] = e1
 
 	e1.privenv._BOXLEVEL = (_BOXLEVEL or 0)+1

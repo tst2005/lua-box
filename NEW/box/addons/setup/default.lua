@@ -20,9 +20,6 @@ return class("box.setup.stdenv", {
 
 		privenv.collectgarbage = _G.collectgarbage
 
-		parent:addon("want.io.native")
---		parent:addon("want.id.native")
-
 		parent:addon("setup.g.require")
 		parent:addon("setup.m.package")
 		

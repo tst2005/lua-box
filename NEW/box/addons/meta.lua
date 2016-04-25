@@ -42,6 +42,8 @@ local meta_class = class("box.meta", {
 		assert( type(parent) == "table" )
 		--self.loads = assert( parent:addon("loads") )
 		self.parent = parent
+
+		self.getprivenv = function() return parent:addon("wanted.env").privenv end
 		self.shadowvalue = new_uniqvalue() -- an uniq value used for detection
 	end,
 })

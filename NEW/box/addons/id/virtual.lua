@@ -7,6 +7,7 @@ local new_weaktable = require "mini.weaktable"
 
 local format = assert( require"string".format, "require 'string'.format")
 local native_tostring = _G.tostring -- backup the global original value
+local native_print = _G.print
 local select = assert(_G.select, "_G.select")
 
 local reg_class = class("reg", {
@@ -57,6 +58,11 @@ local id_class = class("box.id", {
 			self.dispatch = t_copy(default_dispatch, {})
 		end
 		self.regs = regs or {}
+		local table_concat = require "table".concat
+		self.g = {
+			print = function(...) return native_print( table_concat( self:alltostring(...), "\t") ) end,
+			tostring = function(x) return self:tostring(x) end,
+		}
 	end,
 })
 

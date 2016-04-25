@@ -50,11 +50,11 @@ TODO
 ====
 
  * Fix the `next`/`pairs`/`ipairs` behavior to follow the lua 5.2 behavior even in lua 5.1.
- * implement the `io`
+ * [x] implement the `io`
  * implement a fully `fs` abstraction
  * split the `load` and `loadfile` (because loadfile need `io`/`fs`, but not `load`)
- * make `id` addon optionnal, allow of a direct use of `tostring`.
- * split addon and setup sutff, setup should use a direct function.
+ * [x] make `id` addon optionnal, allow of a direct use of `tostring`.
+ * [x] split addon and setup sutff, setup should use a direct function.
  * see to add acl
  * move more code from box.lua to addon (allow to choose to make a proxy env pub/priv or a direct simple one)
 

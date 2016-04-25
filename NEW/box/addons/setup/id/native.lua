@@ -3,17 +3,16 @@ local class = require "mini.class"
 
 local assertlevel = require "mini.assertlevel"
 
-local c = class("box.setup.id", {
-	init = function(self, parent, dispatch, regs)
+local c = class("box.setup.native-id", {
+	init = function(self, parent)
 		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
+		parent.addons.id = parent:addon("wanted.id.native")
 	end,
 })
 
 function c:configure(handler)
 	assertlevel(handler, "handler", 2)
-	local id = self.parent:addon("wanted.id")
-	handler(id)
 end
 
 return c

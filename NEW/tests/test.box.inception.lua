@@ -1,14 +1,13 @@
 local box = require "box"
 
 local e1 = box()
-e1 "setup.native-id"
+e1 "want.id.virtual"
 e1 "setup.stdenv"
 
 --assert(e1.privenv.require"io")
 
 e1.privenv._BOXLEVEL = (_BOXLEVEL or 0)+1
 
---[[
 e1("setup.id"):configure(function(id)
 	local orig = id:getreg("table").fmt
 
@@ -26,7 +25,6 @@ e1("setup.id"):configure(function(id)
 	--id:getreg("function").offset = 0x133700
 	id:getreg("function").offset = 0x13370000 + 0x100 * e1.privenv._BOXLEVEL
 end)
-]]
 
 --print("NATIVE", "_G =", _G)
 --print("NATIVE", "privenv =", e1.privenv, "box pubenv _G =", e1.pubenv)

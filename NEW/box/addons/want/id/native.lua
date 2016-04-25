@@ -1,7 +1,6 @@
 
 return function(_self, parent)
 	assert( type(parent) == "table", "parent")
-
-	local id = parent:addon("wanted.id")
-	parent.privenv.tostring = id.g.tostring
+	-- register as preload
+	parent.addons["wanted.id"] = parent:addon("id.native")
 end

@@ -57,4 +57,5 @@ TODO
  * [x] split addon and setup sutff, setup should use a direct function.
  * see to add acl
  * move more code from box.lua to addon (allow to choose to make a proxy env pub/priv or a direct simple one)
+ * find and recode the way to customize the `id.virtual`, setup.id+configure(handler) is ugly.
 

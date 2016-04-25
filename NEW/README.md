@@ -49,7 +49,6 @@ Current status
 TODO
 ====
 
- * See what is consume so many memory.
  * Fix the `next`/`pairs`/`ipairs` behavior to follow the lua 5.2 behavior even in lua 5.1.
  * implement the `io`
  * implement a fully `fs` abstraction
@@ -57,5 +56,5 @@ TODO
  * make `id` addon optionnal, allow of a direct use of `tostring`.
  * split addon and setup sutff, setup should use a direct function.
  * see to add acl
-
+ * move more code from box.lua to addon (allow to choose to make a proxy env pub/priv or a direct simple one)
 

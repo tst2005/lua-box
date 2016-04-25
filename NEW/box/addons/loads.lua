@@ -7,6 +7,7 @@ local c = class("box.loads", {
 	init = function(self, parent)
 		assert( type(parent) == "table" , "parent")
 		self.parent = parent
+
 		self.loadmode = "t"
 		parent:addon("fs")
 	end,
@@ -68,7 +69,7 @@ function c:loadfile(filename, mode, env)
 	if not data then
 		return nil, err
 	end
-	return self:load(data, data, mode, env) -- FIXME: is an error point to the loadfile call or this line ?
+	return self:load(data, "@"..filename, mode, env) -- FIXME: is an error point to the loadfile call or this line ?
 end
 
 function c:dofile(filename)

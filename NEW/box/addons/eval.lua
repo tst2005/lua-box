@@ -7,6 +7,7 @@ local c = class("box.eval", {
 		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
 
+		parent:addon("loads") -- deps
 		local mt = getmetatable(self) or setmetatable(self, {}) and getmetatable(self)
 		mt.__call = function(_self, stuff)
 			assertlevel( self==_self, "self!=_self", 2)
@@ -20,7 +21,10 @@ local c = class("box.eval", {
 })
 
 function c:eval(something)
-	local f = self.parent:addon("loads"):load(something)
+	local f, err = self.parent:addon("loads"):load(something)
+	if not f then
+		error(err, 2)
+	end
 	return f()
 end
 

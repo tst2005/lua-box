@@ -5,6 +5,7 @@ local boxes = {}
 --loop to make lot of box instances
 for n=1,100 do
 local e1 = box()
+e1 "native-id"
 e1 "setup.stdenv"
 boxes[#boxes+1] = e1
 

@@ -1,12 +1,7 @@
 
-local class = require "mini.class"
+return function(_self, parent)
+	assert( type(parent) == "table", "parent")
 
-return class("box.setup.g.getmetatable", {
-	init = function(self, parent)
-		assert( type(parent) == "table" )
-		self.parent = parent
-
-		local meta = parent:addon("meta")
-		parent.privenv.getmetatable = function(value, table) return meta:getmetatable(value, table) end
-	end,
-})
+	local meta = parent:addon("meta")
+	parent.privenv.getmetatable = function(value, table) return meta:getmetatable(value, table) end
+end

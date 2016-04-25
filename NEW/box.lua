@@ -23,7 +23,7 @@ local box_class = class("box", {
 				self.privenv[k] = v
 			end,
 			__metatable=false, -- locked
-			__pairs = function() return pairs(self.privenv) end,
+--			__pairs = function() return pairs(self.privenv) end,
 		}
 		self.pubenv = new_tableproxy(mt)
 		self.pubmeta = mt -- allow to internal modification even the metatable has a __metatable
@@ -39,24 +39,25 @@ local box_class = class("box", {
 	end
 })
 
-function box_class:_load_addon(name, mod, ...)
+function box_class:addon(name, ...)
 	local ao = self.addons[name]
 	if not ao then
-		ao = instance(
-			assertlevel(
-				type(mod)=="table" and mod,
-				"mod must be class object", 2
-			),
-			self, ...
-		)
+		local mod = require("box.addons."..name)
+		if type(mod) == "function" then
+			mod({}, self)
+			ao = true
+		else
+			ao = instance(
+				assertlevel(
+					type(mod)=="table" and mod,
+					"mod must be class object", 2
+				),
+				self, ...
+			)
+		end
 		self.addons[name] = ao
 	end
 	return ao
-end
-
-function box_class:addon(name, ...)
-	local ao = self.addons[name]
-	return ao or self:_load_addon(name, require("box.addons."..name), ...)
 end
 
 
@@ -77,7 +78,7 @@ end
 
 local M = setmetatable({
 	new 		= new,
-	_VERSION	= "env v0.1.0",
+	_VERSION	= "box v0.1.0",
 }, {
 	__call=function(_, ...) return new(...) end
 })

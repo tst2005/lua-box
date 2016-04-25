@@ -27,6 +27,19 @@ function reg_class:tostring_with_cache(x)
 	end
 	return v -- return the cached value
 end
+--[[
+function reg_class:tostring_with_cache(x)
+        local v = self.cache[x] -- get from cache
+        if not v then
+                self.count = self.count + 1
+		v = self.count
+                self.cache[x] = v -- write to cache 
+        end
+        if type(v) == "string" then return v end
+        return format(self.fmt or "%s: 0x%x", type(x), (self.offset or 0)+v)
+end
+]]--
+
 
 local default_dispatch = {
 	["nil"]=false, ["number"]=false, ["string"]=false, ["boolean"]=false,

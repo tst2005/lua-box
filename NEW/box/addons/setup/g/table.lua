@@ -1,13 +1,7 @@
 
-local class = require "mini.class"
-local assertlevel = require "mini.assertlevel"
+return function(_self, parent)
+	assert( type(parent) == "table", "parent")
 
-return class("box.setup.g.table", {
-	init = function(self, parent)
-		assertlevel( type(parent) == "table", "parent", 2)
-		self.parent = parent
-
-		local table = assert( parent:addon("table").table, 'parent:addon("table").table')
-                parent.privenv.table = table -- exposed it in global env
-	end,
-})
+	-- exposed it in global env
+	parent.privenv.table = assert( parent:addon("table").table, 'parent:addon("table").table')
+end

@@ -26,8 +26,7 @@ return class("box.setup.stdenv", {
 		parent:addon("setup.m.global")
 		parent:addon("setup.g.global")
 
-		privenv.io = require "io" -- UNSAFE !
-		parent:addon("pkg")._LOADED.io = require "io" -- UNSAFE !
+		parent:addon("setup.m.io") -- use fs that use direct native io -- UNSAFE
 
 --		parent:addon("setup.id") -- custom format
 

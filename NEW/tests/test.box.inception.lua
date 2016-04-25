@@ -1,10 +1,14 @@
 local box = require "box"
 
 local e1 = box()
+e1 "setup.native-id"
 e1 "setup.stdenv"
+
+--assert(e1.privenv.require"io")
 
 e1.privenv._BOXLEVEL = (_BOXLEVEL or 0)+1
 
+--[[
 e1("setup.id"):configure(function(id)
 	local orig = id:getreg("table").fmt
 
@@ -22,7 +26,7 @@ e1("setup.id"):configure(function(id)
 	--id:getreg("function").offset = 0x133700
 	id:getreg("function").offset = 0x13370000 + 0x100 * e1.privenv._BOXLEVEL
 end)
-
+]]
 
 --print("NATIVE", "_G =", _G)
 --print("NATIVE", "privenv =", e1.privenv, "box pubenv _G =", e1.pubenv)
@@ -34,11 +38,11 @@ if not _memstat then
 	local mem = {}
 	_memstat = _memstat or function(act)
 		if act == nil then
-			collectgarbage() collectgarbage()
+			--collectgarbage() collectgarbage()
 			mem[#mem+1] = collectgarbage("count")
 		elseif act == "show" then
 			for i,v in ipairs(mem) do
-				print("inception: "..i..("%1.1f MB"):format(v/1024))
+				print("inception: "..i.." "..("%1.1f MB"):format(v/1024))
 			end
 		end
 	end
@@ -51,7 +55,7 @@ local testcontent = [=[
 -- testcontent
 assert(_G._G == _G)
 
-print( "_G =", _G, "require =", require, "require('package') =", require "package")
+print(_BOXLEVEL, "_G =", _G, "require =", require, "require('package') =", require "package")
 
 local function keys(t)
 	local r = {}
@@ -73,9 +77,19 @@ assert( load("return foo", nil, "t", {})() == nil )
 
 --local box = require "box"()
 
-if _BOXLEVEL < 10 then
+if _BOXLEVEL < 100 then
+	local function remove_addons() 
+		local loaded = require "package".loaded
+		for k,v in pairs(loaded) do
+			if type(k) == "string" and string.find(k, "^box%.addons%.") then
+				loaded[k]=nil
+			end
+		end
+	end
+	--remove_addons()
 	_memstat()
-	dofile("test.box.inception.lua")
+	dofile("tests/test.box.inception.lua")
+	--remove_addons()
 end
 --print("inception: "..(" "):rep(_BOXLEVEL or 0).."END ".._BOXLEVEL)
 ]=]
@@ -83,7 +97,10 @@ end
 
 e1 "eval"(testcontent)
 
-if _BOXLEVEL == 1 then
+if not _BOXLEVEL then
 	print("=============")
 	_memstat("show")
+--	sleep(60)
+	collectgarbage() collectgarbage()
+	print( ("%1.1f MB"):format(collectgarbage("count") /1024) )
 end

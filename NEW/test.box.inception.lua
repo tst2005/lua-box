@@ -29,8 +29,26 @@ end)
 
 --e1 "loads":dofile("test3.lua")
 
+--if _BOXLEVEL == 1 then
+if not _memstat then
+	local mem = {}
+	_memstat = _memstat or function(act)
+		if act == nil then
+			collectgarbage() collectgarbage()
+			mem[#mem+1] = collectgarbage("count")
+		elseif act == "show" then
+			for i,v in ipairs(mem) do
+				print("inception: "..i..("%1.1f MB"):format(v/1024))
+			end
+		end
+	end
+end
+e1.privenv._memstat = _memstat
+
+
 -------------------------------------------------------------------------------
 local testcontent = [=[
+-- testcontent
 assert(_G._G == _G)
 
 print( "_G =", _G, "require =", require, "require('package') =", require "package")
@@ -56,12 +74,16 @@ assert( load("return foo", nil, "t", {})() == nil )
 --local box = require "box"()
 
 if _BOXLEVEL < 10 then
-	print("inception: "..(" "):rep(_BOXLEVEL or 0).."BEGIN ".._BOXLEVEL)
-	dofile("test.box3.lua")
+	_memstat()
+	dofile("test.box.inception.lua")
 end
-print("inception: "..(" "):rep(_BOXLEVEL or 0).."END ".._BOXLEVEL)
+--print("inception: "..(" "):rep(_BOXLEVEL or 0).."END ".._BOXLEVEL)
 ]=]
 -------------------------------------------------------------------------------
 
 e1 "eval"(testcontent)
 
+if _BOXLEVEL == 1 then
+	print("=============")
+	_memstat("show")
+end

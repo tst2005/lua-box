@@ -18,6 +18,8 @@ return class("box.setup.stdenv", {
 		privenv.tonumber = _G.tonumber
 		privenv.select = _G.select
 
+		privenv.collectgarbage = _G.collectgarbage
+
 		parent:addon("setup.g.require")
 		parent:addon("setup.m.package")
 		

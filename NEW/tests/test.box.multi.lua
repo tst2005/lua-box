@@ -3,7 +3,7 @@ local box = require "box"
 local boxes = {}
 
 --loop to make lot of box instances
-for n=1,100 do
+for n=1,1000 do
 	local e1 = box()
 	e1 "want.id.virtual"
 	e1 "setup.stdenv"
@@ -26,7 +26,7 @@ for n=1,100 do
 		id:getreg("function").offset = 0x13370000 + 0x100 * e1.privenv._BOXLEVEL
 	end)
 
-	collectgarbage() collectgarbage()
+	--collectgarbage() collectgarbage()
 	print("inception( "..#boxes.."): "..("%1.1f MB"):format(collectgarbage("count")/1024))
 end -- loop
 

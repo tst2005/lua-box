@@ -20,32 +20,32 @@ return class("box.setup.stdenv", {
 
 		privenv.collectgarbage = _G.collectgarbage
 
-		parent:addon("setup.g.require")
-		parent:addon("setup.m.package")
+		parent:setup("g.require")
+		parent:setup("m.package")
 		
-		parent:addon("setup.m.global")
-		parent:addon("setup.g.global")
+		parent:setup("m.global")
+		parent:setup("g.global")
 
-		parent:addon("setup.m.io") -- use fs that use direct native io -- UNSAFE
+		parent:setup("m.io") -- use fs that use direct native io -- UNSAFE
 
---		parent:addon("setup.id") -- custom format
+--		parent:setup("id") -- custom format
 
-		parent:addon("setup.g.print")
-		parent:addon("setup.g.tostring")
+		parent:setup("g.print")
+		parent:setup("g.tostring")
 
-		parent:addon("setup.g.load")
-		parent:addon("setup.g.loadfile")
-		parent:addon("setup.g.dofile")
+		parent:setup("g.load")
+		parent:setup("g.loadfile")
+		parent:setup("g.dofile")
 
-		parent:addon("setup.g.getmetatable")
-		parent:addon("setup.g.setmetatable")
+		parent:setup("g.getmetatable")
+		parent:setup("g.setmetatable")
 
-		parent:addon("setup.m.string")
-		parent:addon("setup.g.string")
+		parent:setup("m.string")
+		parent:setup("g.string")
 
-		parent:addon("setup.m.table")
-		parent:addon("setup.g.table")
+		parent:setup("m.table")
+		parent:setup("g.table")
 
-		parent:addon("setup.m.debug")
+		parent:setup("m.debug")
 	end,
 })

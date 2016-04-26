@@ -7,7 +7,7 @@ local c = class("box.setup.native-id", {
 	init = function(self, parent)
 		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
-		parent.addons.id = parent:addon("wanted.id.native")
+		parent.addons.id = parent:wanted("id.native")
 	end,
 })
 

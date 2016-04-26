@@ -9,7 +9,7 @@ local c = class("box.loads", {
 		self.parent = parent
 
 		self.loadmode = "t"
-		parent:addon("fs")
+		parent:lowlevel("fs")
 	end,
 })
 
@@ -48,7 +48,7 @@ function c:load(something, source, _mode, env) -- return a function to execute
 end
 
 local function file_read_content(self, filename)
-	local fs = self.parent:addon("fs")
+	local fs = self.parent:lowlevel("fs")
 	local fd, _err = fs:open(filename, "r")
 	if not fd then return nil, "box: can not open" end
 	local data=fd:read("*a")

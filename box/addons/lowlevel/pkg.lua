@@ -39,8 +39,8 @@ local pkg_class = class("box.pkg", {
 			parent,
 			"you must provide the parent instance", 2
 		)
-		parent:addon("fs")	-- for :exists()
-		parent:addon("loads")	-- for :loadfile()
+		parent:lowlevel("fs")	-- for :exists()
+		parent:lowlevel("loads")	-- for :loadfile()
 
 		local _PACKAGE = {}
 		local _LOADED = {}
@@ -88,7 +88,7 @@ function pkg_class:_searchpath(name, path, sep, rep)
 	)
 	for c in gmatch(path, "[^;]+") do
 		c = gsub(c, quote_magics(LUA_PATH_MARK), name)
-		local f = self.parent:addon("fs"):open(c)
+		local f = self.parent:lowlevel("fs"):open(c)
 		if f then
 			f:close()
 			return c
@@ -127,7 +127,7 @@ function pkg_class:searcher_Lua(name)
 	if not filename then
 		return false
 	end
-	local f, err = self.parent:addon("loads"):loadfile(filename)
+	local f, err = self.parent:lowlevel("loads"):loadfile(filename)
 	assertlevel(
 		f,
 		format("error loading module `%s' (%s)", name, tostring(err)), 2

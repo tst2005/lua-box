@@ -1,5 +1,5 @@
 
 return function(_self, parent)
 	assert( type(parent) == "table", "parent")
-	parent.addons["wanted.id"] = parent:addon("id.native")
+	parent:setwanted("id", parent:lowlevel("id.native"))
 end

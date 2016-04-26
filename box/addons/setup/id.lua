@@ -12,7 +12,7 @@ local c = class("box.setup.id", {
 
 function c:configure(handler)
 	assertlevel(handler, "handler", 2)
-	local id = self.parent:addon("wanted.id")
+	local id = self.parent:wanted("id")
 	handler(id)
 end
 

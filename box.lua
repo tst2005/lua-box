@@ -48,16 +48,6 @@ local box_class = class("box", {
 	end
 })
 
-function box_class:loaddefaults(k)
-	for _i, k in ipairs(self.defaults) do
-		local v = self.defaults[k]
-		if type(v) == "string" then
-			self:addon( "want." .. k .. "." .. v )
-		end
-	end
-	return self
-end
-
 function box_class:addon(name, ...)
 	local ao = self.addons[name]
 	if not ao then
@@ -78,6 +68,37 @@ function box_class:addon(name, ...)
 	end
 	return ao
 end
+
+function box_class:lowlevel(name, ...)
+	return self:addon("lowlevel."..name, ...)
+end
+
+function box_class:want(name, ...)
+	return self:addon("want."..name, ...)
+end
+
+function box_class:wanted(name, ...)
+	return self:addon("wanted."..name, ...)
+end
+function box_class:setwanted(name, mod)
+	self.addons["wanted."..name] = mod
+end
+
+function box_class:setup(name, ...)
+	return self:addon("setup."..name, ...)
+
+end
+
+function box_class:loaddefaults(k)
+	for _i, k in ipairs(self.defaults) do
+		local v = self.defaults[k]
+		if type(v) == "string" then
+			self:want( k .. "." .. v )
+		end
+	end
+	return self
+end
+
 
 local function new(...)
 	return instance(box_class, ...)

@@ -5,7 +5,7 @@ local c = class("fs", {
 	init = function(self, parent)
 		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
-		self.io = assert( parent:addon("wanted.io").io, "wanted.io.io")
+		self.io = assert( parent:wanted("io").io, "wanted(io).io")
 	end,
 })
 

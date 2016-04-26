@@ -8,6 +8,6 @@ local native_print = _G.print
 return function(_self, parent)
 	assert( type(parent) == "table", "parent")
 
-	local id = parent:addon("wanted.id")
+	local id = parent:wanted("id")
 	parent.privenv.print = id.g.print 
 end

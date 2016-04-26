@@ -10,8 +10,8 @@ local c = class("box.debug", {
 		assertlevel( type(parent) == "table", "parent", 2)
 		self.parent = parent
 
-		local meta = parent:addon("meta")
-		local getregistry = parent:addon("debug.getregistry")
+		local meta = parent:lowlevel("meta")
+		local getregistry = parent:lowlevel("debug.getregistry")
 
 		--self.debug = tcopy(native_debug, {})
 		self.debug = {

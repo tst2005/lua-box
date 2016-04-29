@@ -1,0 +1,381 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>lua box documentation</title>
+    <link rel="stylesheet" href="ldoc_pale.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>lua-box</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>box</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>box</code></h1>
+<p>the box module
+ This is my first documentation made with LDoc</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#box_class">box_class ()</a></td>
+	<td class="summary">the box class
+ something...</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:addon">box_class:addon (name, ...)</a></td>
+	<td class="summary">Load/Get any box's addon</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:lowlevel">box_class:lowlevel (name, ...)</a></td>
+	<td class="summary">Load/Get a low level box's addon</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:want">box_class:want (name, ...)</a></td>
+	<td class="summary">Load/Get a "want" box's addon</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:wanted">box_class:wanted (name, ...)</a></td>
+	<td class="summary">Get a meta box's addon, a "wanted" loaded addon.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:setwanted">box_class:setwanted (name, mod)</a></td>
+	<td class="summary">Register a loaded addon as meta/"wanted" addon</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:setup">box_class:setup (name, ...)</a></td>
+	<td class="summary">Load/Get a <code>setup</code> box's addon.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box_class:loaddefaults">box_class:loaddefaults ()</a></td>
+	<td class="summary">internal function used during the instance initialization to setup the wanted setup to load...</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#box">box (...)</a></td>
+	<td class="summary">A callable table module</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#_VERSION">_VERSION</a></td>
+	<td class="summary">module version.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "box_class"></a>
+    <strong>box_class ()</strong>
+    </dt>
+    <dd>
+    the box class
+ something...
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a box
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:addon"></a>
+    <strong>box_class:addon (name, ...)</strong>
+    </dt>
+    <dd>
+    Load/Get any box's addon
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         the addon name
+        </li>
+        <li><span class="parameter">...</span>
+         optionnal instance constructor argument(s)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the addon instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:lowlevel"></a>
+    <strong>box_class:lowlevel (name, ...)</strong>
+    </dt>
+    <dd>
+    Load/Get a low level box's addon
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         the <code>low level</code> addon
+        </li>
+        <li><span class="parameter">...</span>
+         optionnal instance constructor argument(s)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the addon instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:want"></a>
+    <strong>box_class:want (name, ...)</strong>
+    </dt>
+    <dd>
+    Load/Get a "want" box's addon
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         the <code>want</code> addon
+        </li>
+        <li><span class="parameter">...</span>
+         optionnal instance constructor argument(s)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the addon instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:wanted"></a>
+    <strong>box_class:wanted (name, ...)</strong>
+    </dt>
+    <dd>
+    Get a meta box's addon, a "wanted" loaded addon.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         the <code>wanted</code> addon
+        </li>
+        <li><span class="parameter">...</span>
+         optionnal instance constructor argument(s)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the addon instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:setwanted"></a>
+    <strong>box_class:setwanted (name, mod)</strong>
+    </dt>
+    <dd>
+    Register a loaded addon as meta/"wanted" addon
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+
+
+
+        </li>
+        <li><span class="parameter">mod</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:setup"></a>
+    <strong>box_class:setup (name, ...)</strong>
+    </dt>
+    <dd>
+    Load/Get a <code>setup</code> box's addon.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">name</span>
+         the <code>setup</code> addon
+        </li>
+        <li><span class="parameter">...</span>
+         optionnal instance constructor argument(s)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the addon instance
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box_class:loaddefaults"></a>
+    <strong>box_class:loaddefaults ()</strong>
+    </dt>
+    <dd>
+    internal function used during the instance initialization to setup the wanted setup to load...
+
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        self
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "box"></a>
+    <strong>box (...)</strong>
+    </dt>
+    <dd>
+    A callable table module
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">...</span>
+         optionnal box instance constructor argument(s)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        a new box_class's instance
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <li><pre class="example"><span class="keyword">local</span> b1 = <span class="global">require</span> <span class="string">"box"</span>(...)</pre></li>
+        <li><pre class="example"><span class="keyword">local</span> b2 = <span class="global">require</span> <span class="string">"box"</span>.new(...)</pre></li>
+    </ul>
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "_VERSION"></a>
+    <strong>_VERSION</strong>
+    </dt>
+    <dd>
+    module version.
+
+
+    <ul>
+        <li><span class="parameter">_VERSION</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.3</a></i>
+<i style="float:right;">Last updated 2016-04-29 11:21:48 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

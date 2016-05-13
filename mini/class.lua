@@ -39,6 +39,10 @@ common.instance = function(class, ...)
         return class(...)
 end
 
+common.autometa = function(...)
+	return require "mini.class.autometa"(...)
+end
+
 local M = setmetatable({}, {
 	__call = function(_, ...)
 		return common.class(...)

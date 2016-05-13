@@ -7,7 +7,7 @@
 
 local compat = {}
 
-compat.lua51 = _VERSION == 'Lua 5.1'
+--compat.lua51 = _VERSION == 'Lua 5.1'
 
 ----------------
 -- Load Lua code as a text or binary chunk.
@@ -30,28 +30,23 @@ compat.lua51 = _VERSION == 'Lua 5.1'
 -- @param env a table that becomes the new environment of `f`
 -- @function compat.setfenv
 
-if compat.lua51 then
-	if not tostring(assert):match 'builtin' then -- but LuaJIT's load _is_ compatible
-		local lua51_load = load
-		function compat.load(str,src,mode,env)
-			local chunk,err
-			if type(str) == 'string' then
-				if str:byte(1) == 27 and not (mode or 'bt'):find 'b' then
-					return nil,"attempt to load a binary chunk"
-				end
-				chunk,err = loadstring(str,src)
-			else
-				chunk,err = lua51_load(str,src)
-			end
-			if chunk and env then setfenv(chunk,env) end
-			return chunk,err
-		end
-	else
-		compat.load = _G.load
-	end
---	compat.setfenv, compat.getfenv = setfenv, getfenv
-else
+if pcall(load, '') then -- check if it's lua 5.2+ or LuaJIT's with a compatible load
 	compat.load = _G.load
+else
+	local native_load = load
+	function compat.load(str,src,mode,env)
+		local chunk,err
+		if type(str) == 'string' then
+			if str:byte(1) == 27 and not (mode or 'bt'):find 'b' then
+				return nil,"attempt to load a binary chunk"
+			end
+			chunk,err = loadstring(str,src)
+		else
+			chunk,err = native_load(str,src)
+		end
+		if chunk and env then setfenv(chunk,env) end
+		return chunk,err
+	end
 end
 
 return compat

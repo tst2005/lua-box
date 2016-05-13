@@ -59,3 +59,5 @@ TODO
  * move more code from box.lua to addon (allow to choose to make a proxy env pub/priv or a direct simple one)
  * find and recode the way to customize the `id.virtual`, setup.id+configure(handler) is ugly.
  * make a PoC of box that only intercept require's request to switch between implementation (like `require "json"` returns the implementation that I want)
+ * lua-fakefs / vfile / stream
+ * mini => lua-mini separated repo ?

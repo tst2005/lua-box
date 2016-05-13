@@ -2,10 +2,35 @@
 local class = require "mini.class"
 local instance = assert(class.instance)
 
+local function uniqvalue() return {} end
+
 local ACCEPT = true
 local DROP = false
-local NONE = nil
+local NONE = nil  -- use default policy
 
+-- [1] stack A exact
+-- [2] stack A default
+-- [3] stack B exact
+-- [4] stack B default
+-- [5] end
+
+-- [1] == NONE => [2]
+-- [1] == NEXT => [3]
+-- [1] == DEFAULT => [2]
+-- [1] == ACCEPT => [5]+accept
+-- [1] == DROP   => [5]+drop
+
+-- [2] == NONE => [3]
+-- [2] == NEXT (invalid!)
+-- [2] == DEFAULT (invalid!)
+-- [2] == ACCEPT => [5]+accept
+
+
+--local NEXT = true -- stop the current stack, go to the next (skip default)
+--local ACCEPT_NEXT = uniqvalue() -- continue without default matching, if no exact match, ACCEPT
+--local DROP_NEXT = uniqvalue()	-- continue without default matching, if no exact match, DROP
+--local ACCEPT_BREAK = uniqvalue() -- Stop with ACCEPT action
+--local DROP_BREAK   = uniqvalue() -- Stop the search with DROP action
 
 local function validpolicy(policy)
 	if not (policy == ACCEPT or policy == DROP or policy == NONE) then

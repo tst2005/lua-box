@@ -12,7 +12,7 @@ local class = require "mini.class"
 --instance
 local instance = class.instance
 
-local load = assert( require "mini.compat-env".load )
+local load = assert( require "mini.load" )
 
 local assertlevel = require "mini.assertlevel"
 

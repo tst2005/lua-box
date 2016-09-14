@@ -1,7 +1,7 @@
 
 local class = require "mini.class"
 local assertlevel = require "mini.assertlevel"
-local load = assert( require "mini.compat-env".load, "mini.compat-env.load")
+local load = require "mini.load"
 
 local c = class("box.loads", {
 	init = function(self, parent)

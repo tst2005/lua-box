@@ -3,7 +3,7 @@
 -- require "table" => a table with key+value, no metatable
 
 local class = require "mini.class"
-local tcopy = require "mini.tcopy"
+local tcopy = require "mini.table.shallowcopy"
 
 local native_table = require "table"
 
@@ -12,7 +12,7 @@ local table_class = class("box.table", {
 		assert( type(parent) == "table" )
 		self.parent = parent
 
-		self.table = tcopy(native_table, {})
+		self.table = tcopy(native_table)
 	end,
 })
 

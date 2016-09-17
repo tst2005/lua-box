@@ -2,7 +2,7 @@
 local class = require "mini.class"
 local instance = assert( class.instance, "class.instance")
 local assertlevel = require "mini.assertlevel"
-local t_copy = require "mini.tcopy"
+local tcopy = require "mini.table.shallowcopy"
 local new_weaktable = require "mini.weaktable"
 
 local format = assert( require"string".format, "require 'string'.format")
@@ -55,7 +55,7 @@ local id_class = class("box.id", {
 		if dispatch then
 			self.dispatch = dispatch
 		else
-			self.dispatch = t_copy(default_dispatch, {})
+			self.dispatch = tcopy(default_dispatch)
 		end
 		self.regs = regs or {}
 		local table_concat = require "table".concat

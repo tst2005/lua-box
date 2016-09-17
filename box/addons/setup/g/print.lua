@@ -1,6 +1,6 @@
 
 local assertlevel = require "mini.assertlevel"
-local tcopy = require "mini.tcopy"
+--local tcopy = require "mini.table.shallowcopy"
 
 local table_concat = require "table".concat
 local native_print = _G.print

@@ -1,6 +1,6 @@
 
 local class = require "mini.class"
-local tcopy = require "mini.tcopy"
+local tcopy = require "mini.table.shallowcopy"
 local assertlevel = require "mini.assertlevel"
 
 local native_debug = require "debug"
@@ -13,7 +13,7 @@ local c = class("box.debug", {
 		local meta = parent:lowlevel("meta")
 		local getregistry = parent:lowlevel("debug.getregistry")
 
-		--self.debug = tcopy(native_debug, {})
+		--self.debug = tcopy(native_debug)
 		self.debug = {
 			getmetatable = function(value) return meta:debug_getmetatable(value) end,
 			setmetatable = function(value, table) return meta:debug_setmetatable(value, table) end,

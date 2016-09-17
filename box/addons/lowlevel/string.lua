@@ -8,14 +8,15 @@
 -- getmetatable("").__index == require "string"
 
 local class = require "mini.class"
-local tcopy = require "mini.tcopy"
+local tcopy = require "mini.table.shallowcopy"
 
 local native_string = require "string"
 
 local string_class = class("box.string", {
 	init = function(self, parent)
 		assert( type(parent) == "table" )
-		self.string = tcopy(native_string, {})
+		self.string = tcopy(native_string)
+		self.string.dump = nil
 --		local protect = parent:addon("protect")
 --		protect:add("getmeta(string_content)", self.string)
 		self.parent = parent

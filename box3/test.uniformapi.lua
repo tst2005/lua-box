@@ -10,3 +10,4 @@ end
 assert(A.print == print)
 assert(A.error == error)
 assert(A.setfenv == nil)
+print("ok")

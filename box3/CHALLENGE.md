@@ -9,18 +9,13 @@
 
 * utiliser un systeme de class + instance pour préparer une sandbox et pouvoir en instancier plusieurs.
   * il faut pouvoir convertir une instance en environnement
-  * [x] solution: mini/proxy/ro2rw-shadowself*.lua
+  * [x] solution: mini/proxy/ro2rw*.lua
 
 # shadowself
 
 * ne pas exposer l'instance via les proxy (particulierement dans les reponses)
   * [x] solution: mkproxy2* dans mini/proxy/mkproxies.lua
-
-# stable-proxy
-
-* quand on génère des proxy on s'attend a avoir la meme fonction lors d'un prochain appel.
-  * il faut reussir a garder en memoire les proxies générés, sans obtenir de memory leak.
-  * [x] solution: mini/proxy/ro2rw-*.lua (voir __index et __newindex)
+  * Note: si le code des methodes est bien fait il ne renvoie pas self. N'est utile que si les methodes peuvent risquer d'exposer la valeure `self` (l'object instance)
 
 # private-vs-public methods
 
@@ -29,12 +24,19 @@
   * [x] solution: mkproxy*prefix dans mini/proxy/ro2rw-shadowself*.lua + design de la class box en utilisant un prefix _pub_ pour les methodes a rendre accessible depuis l'env via proxy
     * limitation: only support string key request; non string field must be setup in the writable space equal to a client value set action
 
+# stable-proxy
+
+* quand on génère des proxy on s'attend a avoir la meme fonction lors d'un prochain appel.
+  * il faut reussir a garder en memoire les proxies générés, sans obtenir de memory leak.
+  * [x] solution: mini/proxy/ro2rw.lua
+  * [x] solution: mini/proxy/ro2rw-metaproxy-shadowregistry.lua
+
 # shadowregistry
 
 * certaines fonctions standard de l'interpreteur lua ont besoin et accès a d'autres fonctions et le font via un registre interne (exemple pairs() accede a next() meme si _G.next = nil)
   * il faut un accès a un registre caché (mais qui utilise des fonctions coté env (les "proxy" en cache ...)
-  * [x] solution: mini/proxy/ro2rw-*shadowregistry*.lua avec une séparation de la gestion de la mise a jour et du cache de proxy des methodes de l'instance
-
+  * avec une séparation de la gestion de la mise a jour et du cache de proxy des methodes de l'instance
+  * [x] solution: mini/proxy/ro2rw-metaproxy-shadowregistry.lua 
 # less-cache/hot-switch
 
 * permettre que si on change des fonctions bas niveau ca se répercute sur toutes les instances en bout de chaine

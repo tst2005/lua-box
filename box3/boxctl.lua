@@ -12,45 +12,53 @@ function boxctl_class:init(env)
 	local mkproxies = require "mini.proxy.ro2rw.mkproxies"(G)
 	local mkmap = require "mini.proxy.ro2rw.mkmap"(G)
 
-	local mkproxy = mkproxies.mkproxy1
-	local map = mkmap({["function"]=mkproxy})
+	local mkproxy = mkproxies.mkproxy_inst2env
+	local map = mkmap({
+		["function"]=mkproxy,
+		--["table"]=true,
+	})
 	assert(map["function"]==mkproxy)
-	local ro2rw_simple = function(orig, prefix) return ro2rw(orig, map, nil, prefix) end
+	local ro2rw_simple = function(orig, prefix)
+--print("call ro2rw(orig, map, nil, prefix)", "prefix="..tostring(prefix))
+		return ro2rw(orig, map, nil, prefix)
+	end
 
 	local parent = self
 	local box_class = class("box")
 	self._box_class = box_class
+
 	function box_class:init()
 --print("box_class:init()")
---		self._pubprefix = "_pub_"
+		self._pubprefix = "_pub_"
 		self._parent = parent ; self.G = parent.G
-		local pubenv, internal = ro2rw_simple(self, "_pub_")
+		local pubenv, internal = ro2rw_simple(self, self._pubprefix)
 		self._pubenv = pubenv		-- the _G inside the box
 		self._internal = internal	-- env function proxies (internal registry)
 		pubenv._G = pubenv		-- the _G._G inside the box
 	end
-	function box_class:dostring(txtlua)
-		local e = {}
-		e._G=e
-		setmetatable(e,{__index=self._pubenv})
-		local f = self.G.load(txtlua, nil, "t", e)
-		if not f then return nil end
+	function box_class:dostring(txtlua, errorhandler)
+		local f = self.G.load(txtlua, nil, "t", self._pubenv)
+		if not f then
+			if errorhandler then errorhandler("error") end
+			return nil
+		end -- txtlua syntax error ?
 		local ok, ret = self.G.pcall(f)
 		if not ok then
-			--self._parent.error(ret, 2)
+			if errorhandler then errorhandler(ret) end
 			return nil
 		end
 		return ret
 	end
---[[
+end
+
+function boxctl_class:setup_callable()
 	local mt = G.getmetatable(self)
 	if not mt then
 		mt = {}
 		G.setmetatable(self, mt)
 	end
 	assert(mt._call==nil)
-	mt.__call=function(_, ...) return instance(box_class, ...) end
-]]--
+	mt.__call=function(_, ...) return instance(self._box_class, ...) end
 end
 
 function boxctl_class:newbox(...)

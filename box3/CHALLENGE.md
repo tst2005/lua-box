@@ -69,3 +69,7 @@
   * [ ] solution: ...
   * WIP
 
+# recursive-table-proxy (maybe)
+
+# agressive-proxy-with-attach-detach (maybe)
+

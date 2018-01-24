@@ -1,6 +1,7 @@
 -- uniformapi({_G=_G, package={loaded=package.loaded}})
 local assert = assert
 local _G=nil
+local print = print
 return function(env)
 	local G = assert(env._G)
 	local assert = assert(G.assert)
@@ -33,6 +34,7 @@ return function(env)
 		return t_dst
 	end
 
+	local DEPRECATED = {}
 	local M = {
 		require = G.require,
 		print = G.print,
@@ -43,30 +45,35 @@ return function(env)
 		setmetatable = G.setmetatable,
 		pairs = G.pairs, -- TODO
 		ipairs = G.ipairs, -- TODO
-		DEPRECATED = {}
 	}
-	local forcenil = {}
+	M.DEPRECATED = DEPRECATED
+	
+	local deny = {}
 	local function depreciate(name)
-		forcenil[name]=true
-		M.DEPRECATED[name] = G[name]
+		deny[name]=true
+		DEPRECATED[name] = G[name]
 	end
 	depreciate "setfenv"
 	depreciate "getfenv"
 	depreciate "module"
 	depreciate "unpack"
 
-	setmetatable(M, {
+--[[	setmetatable(M, {
 		__index=function(_t,k)
-			if forcenil[k] then return nil end
+			if deny[k] then return nil end
 			return G[k]
 		end
 	})
+]]--
 
 	-- DEBUG --
 	do
 		if G.debug then
 			M.debug = G.debug
 		else
+			if mods.debug==nil and mods.package.preload.debug==nil then
+				print("WARNING: the standard debug module seems unavailable")
+			end
 			-- require the debug module only on demand
 			local setmetatable = G.setmetatable
 			local debug_
@@ -100,18 +107,19 @@ return function(env)
 
 	-- LOAD --
 	do
-		local loadstring = G.loadstring
 		local load = G.load
-		local type = G.type
-		local setfenv = G.setfenv
 		local pcall = G.pcall
-		local byte = mods.string.byte
-		local find = mods.string.find
 
 		local compat_load
 		if pcall(load, '') then -- check if it's lua 5.2+ or LuaJIT's with a compatible load
 			compat_load = load
 		else
+			local loadstring = G.loadstring
+			local type = G.type
+			local setfenv = G.setfenv
+			local byte = mods.string.byte
+			local find = mods.string.find
+
 			local native_load = load
 			function compat_load(str,src,mode,env)
 				local chunk,err
@@ -127,6 +135,10 @@ return function(env)
 				return chunk,err
 			end
 		end
+		--assert((function() local v={} return v==(compat_load('return _test', nil, nil, {_test=v})())end)())
+		do local v={} assert(v==compat_load('return _test', nil, nil, {_test=v})() and _test~=v, "read access fail") end
+		do local e,v={},tostring({}) assert(_test~=v and compat_load('_test="'..v..'";return true', nil, nil, e)(), "write access fail 1") assert(_test~=v and e._test==v,"write access fail 2") end
+		assert( "foo"==compat_load('return foo', nil, nil, setmetatable({}, { __index = function(_t,k) return k end}))(),"meta read access fail")
 		M.load = compat_load
 	end
 

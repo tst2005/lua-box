@@ -29,9 +29,10 @@ function boxctl_class:init(env)
 
 	function box_class:init()
 --print("box_class:init()")
+		assert(parent.G)
 		self._pubprefix = "_pub_"
 		self._parent = parent ; self.G = parent.G
-		local pubenv, internal = ro2rw_simple(self, self._pubprefix)
+		local pubenv, internal = ro2rw_simple(self, self._pubprefix)	-- create a new empty environment
 		self._pubenv = pubenv		-- the _G inside the box
 		self._internal = internal	-- env function proxies (internal registry)
 		pubenv._G = pubenv		-- the _G._G inside the box
@@ -51,7 +52,9 @@ function boxctl_class:init(env)
 	end
 end
 
+-- not really used
 function boxctl_class:setup_callable()
+	local G = self.G
 	local mt = G.getmetatable(self)
 	if not mt then
 		mt = {}
@@ -59,6 +62,18 @@ function boxctl_class:setup_callable()
 	end
 	assert(mt._call==nil)
 	mt.__call=function(_, ...) return instance(self._box_class, ...) end
+end
+
+function boxctl_class:boximplement(implmod) -- method name must be correctly prepared (with the _pub_ prefix)
+	local G = self.G
+	local methods = implmod --(G)
+	local boxclass = self._box_class
+
+	for k, v in G.pairs(methods) do
+		if boxclass[k] == nil and G.type(v) == "function" then
+			boxclass[k] = v
+		end
+	end
 end
 
 function boxctl_class:newbox(...)
@@ -77,18 +92,6 @@ function box_class:directaccess(name)
 	if self[name]==nil then
 		function self[name](_self, ...)
 			return self._G[name](...)
-		end
-	end
-end
-]]--
-
---[[
-function boxctl_class:boximplement(cls)
-	local pairs = self._G.pairs
-	local box = self._box_class
-	for k, v in pairs(cls) do
-		if box[k] == nil and type(v) == "function" then
-			box[k] = v
 		end
 	end
 end

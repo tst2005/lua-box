@@ -10,4 +10,5 @@ end
 assert(A.print == print)
 assert(A.error == error)
 assert(A.setfenv == nil)
+--for k,v in pairs(A) do print(k,v)end
 print("ok")

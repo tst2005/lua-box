@@ -5,6 +5,7 @@ local print = print
 return function(env)
 	local G = assert(env._G)
 	local assert = assert(G.assert)
+	local type = assert(G.type)
 	local loaded = assert(env.package and env.package.loaded)
 	assert(G~=loaded, "wrong env format env._G is env.package.loaded")
 	local mods = {}
@@ -36,15 +37,15 @@ return function(env)
 
 	local DEPRECATED = {}
 	local M = {
-		require = G.require,
-		print = G.print,
-		assert = G.assert,
-		error = G.error,
-		type = G.type,
-		getmetatable = G.getmetatable,
-		setmetatable = G.setmetatable,
-		pairs = G.pairs, -- TODO
-		ipairs = G.ipairs, -- TODO
+--		require = G.require,
+--		print = G.print,
+--		assert = G.assert,
+--		error = G.error,
+--		type = G.type,
+--		getmetatable = G.getmetatable,
+--		setmetatable = G.setmetatable,
+--		pairs = G.pairs, -- TODO
+--		ipairs = G.ipairs, -- TODO
 	}
 	M.DEPRECATED = DEPRECATED
 	
@@ -58,14 +59,19 @@ return function(env)
 	depreciate "module"
 	depreciate "unpack"
 
+	for k,v in pairs(G) do
+		if type(v)=="function" and not deny[k] then
+			M[k]=v
+		end
+	end
 --[[	setmetatable(M, {
 		__index=function(_t,k)
 			if deny[k] then return nil end
 			return G[k]
-		end
+		end,
+		-- __pairs -- not implemented yet !
 	})
 ]]--
-
 	-- DEBUG --
 	do
 		if G.debug then
@@ -201,5 +207,12 @@ return function(env)
 			end
 		end
 	end
+	for _,k in ipairs({"coroutine", "io", "math", "os", "utf8",}) do
+		local v = G[k]
+		if type(v)=="table" then
+			M[k]=v
+		end
+	end
+	--M._VERSION=""
 	return M
 end

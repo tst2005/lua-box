@@ -36,6 +36,7 @@ function boxctl_class:init(env)
 		self._pubenv = pubenv		-- the _G inside the box
 		self._internal = internal	-- env function proxies (internal registry)
 		pubenv._G = pubenv		-- the _G._G inside the box
+		self:setup()
 	end
 	function box_class:dostring(txtlua, errorhandler)
 		local f = self.G.load(txtlua, nil, "t", self._pubenv)
@@ -49,6 +50,14 @@ function boxctl_class:init(env)
 			return nil
 		end
 		return ret
+	end
+	box_class._inits = {}
+	function box_class:setup()
+		local G = self.G
+		for k,v in G.pairs(self._inits) do
+			print("INIT: ", k, v)
+			v(self)
+		end
 	end
 end
 
@@ -64,16 +73,19 @@ function boxctl_class:setup_callable()
 	mt.__call=function(_, ...) return instance(self._box_class, ...) end
 end
 
-function boxctl_class:boximplement(implmod) -- method name must be correctly prepared (with the _pub_ prefix)
+function boxctl_class:boximplement(modname) -- method name must be correctly prepared (with the _pub_ prefix)
 	local G = self.G
-	local methods = implmod --(G)
+	local methods = require(modname) --(G)
 	local boxclass = self._box_class
 
+	assert(boxclass.init)
 	for k, v in G.pairs(methods) do
 		if boxclass[k] == nil and G.type(v) == "function" then
 			boxclass[k] = v
 		end
 	end
+	assert(G.type(boxclass._inits)=="table")
+	boxclass._inits[modname]=methods.init
 end
 
 function boxctl_class:newbox(...)

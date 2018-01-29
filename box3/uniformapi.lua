@@ -2,18 +2,15 @@
 local assert = assert
 local _G=nil
 local print = print
-return function(env)
+return function(env, mods)
 	local G = assert(env._G)
+	if mods == nil then
+		mods = assert(env.package.loaded)
+	end
 	local assert = assert(G.assert)
 	local type = assert(G.type)
-	local loaded = assert(env.package and env.package.loaded)
-	assert(G~=loaded, "wrong env format env._G is env.package.loaded")
-	local mods = {}
-	if G == loaded then
-		print("missing mods argument ?!")
-		mods = G
-	else
-		for name,mod in G.pairs(loaded) do
+	if G ~= mods then
+		for name,mod in G.pairs(mods) do
 			if mod==true and G[name]~=true then
 				print("autofix mod value from global env for "..name)
 				mods[name] = G[name]
@@ -36,17 +33,10 @@ return function(env)
 	end
 
 	local DEPRECATED = {}
-	local M = {
---		require = G.require,
---		print = G.print,
---		assert = G.assert,
---		error = G.error,
---		type = G.type,
---		getmetatable = G.getmetatable,
---		setmetatable = G.setmetatable,
---		pairs = G.pairs, -- TODO
---		ipairs = G.ipairs, -- TODO
-	}
+	local M = {}
+	local Mods = {}
+	M.pairs = G.pairs -- TODO
+	M.ipairs = G.ipairs -- TODO
 	M.DEPRECATED = DEPRECATED
 	
 	local deny = {}
@@ -57,7 +47,6 @@ return function(env)
 	depreciate "setfenv"
 	depreciate "getfenv"
 	depreciate "module"
-	depreciate "unpack"
 
 	for k,v in pairs(G) do
 		if type(v)=="function" and not deny[k] then
@@ -72,44 +61,8 @@ return function(env)
 		-- __pairs -- not implemented yet !
 	})
 ]]--
-	-- DEBUG --
-	do
-		if G.debug then
-			M.debug = G.debug
-		else
-			if mods.debug==nil and mods.package.preload.debug==nil then
-				print("WARNING: the standard debug module seems unavailable")
-			end
-			-- require the debug module only on demand
-			local setmetatable = G.setmetatable
-			local debug_
-			M.debug = setmetatable({}, {__index=function(_t, k)
-				debug_ = assert(G.require "debug")
-				return debug_[k]
-			end})
-		end
-	end
-
-	-- IO --
-	M.io = {}
-	do
-		local io = mods.io
-		M.io.open   = io.open
-		M.io.stdin  = io.stdin
-		M.io.stdout = io.stdout
-		M.io.stderr = io.stderr
-	end
-
-	-- TABLE --
-	M.table = {}
-	table_update(mods.table, M.table)
-	if not M.table.unpack then M.table.unpack = G.unpack end
-	--if not M.unpack then M.unpack = table.unpack end
-
-	-- STRING --
-	M.string = {}
-	table_update(mods.string, M.string)
-	M.string.dump = nil
+	M._G = M
+	Mods._G = M
 
 	-- LOAD --
 	do
@@ -120,11 +73,11 @@ return function(env)
 		if pcall(load, '') then -- check if it's lua 5.2+ or LuaJIT's with a compatible load
 			compat_load = load
 		else
-			local loadstring = G.loadstring
-			local type = G.type
-			local setfenv = G.setfenv
-			local byte = mods.string.byte
-			local find = mods.string.find
+			local loadstring = assert(G.loadstring)
+			local type = assert(G.type)
+			local setfenv = assert(G.setfenv)
+			local byte = assert(mods.string.byte)
+			local find = assert(mods.string.find)
 
 			local native_load = load
 			function compat_load(str,src,mode,env)
@@ -148,21 +101,95 @@ return function(env)
 		M.load = compat_load
 	end
 
+	for _,k in ipairs({"table", "string", "io", "coroutine", "math", "os", "utf8",}) do
+		local v = mods[k]
+		if v==true and type(G[k])=="table" then
+			print("MODULEWORKAROUND:", k)
+			v=G[k]
+		end
+		if type(v)=="table" then
+			M[k]=v
+			Mods[k]=v
+		end
+	end
+
+	-- IO --
+	do
+print("IO")
+		local m=Mods.io
+		local io = mods.io
+		m.stdin  = io.stdin
+		m.stdout = io.stdout
+		m.stderr = io.stderr
+	end
+
+	-- TABLE --
+	do
+print("TABLE")
+		local m=Mods.table
+		if not m.unpack then m.unpack = G.unpack end
+	end
+	depreciate "unpack"
+
+	-- STRING --
+	do
+print("STRING")
+		local m=Mods.string
+		m.dump = nil
+	end
+
+	-- DEBUG --
+	Mods.debug = {}
+	do
+print("DEBUG")
+		local m=Mods.debug
+		if mods.debug then
+			table_update(mods.debug, m)
+			do
+				assert(m.setmetatable,"missing debug.setmetatable")
+				local x={}
+				if m.setmetatable(x,{})~=x then
+					local orig = m.setmetatable
+					m.setmetatable = function(t,mt)
+						orig(t,mt)
+						return x
+					end
+				end
+			end
+		else
+			print("WARNING: the uniformapi setup a on-demand debug module")
+			os.exit(1)
+			if mods.debug==nil and mods.package.preload.debug==nil then
+				print("WARNING: the standard debug module seems unavailable")
+			end
+			-- require the debug module only on demand
+			local setmetatable = G.setmetatable
+			local debug_
+			M.debug = setmetatable({}, {__index=function(_t, k)
+				debug_ = assert(G.require "debug")
+				return debug_[k]
+			end})
+		end
+		M.debug = m
+	end
+
 	-- PACKAGE --
 	do
-		M.package = {}
-		table_update(G.package, M.package)
+print("PACKAGE")
+		local m={}
+		Mods.package = m
+		table_update(mods.package, m)
 		-- PACKAGE.searchers --
-		if not M.package.searchers and M.package.loaders then
-			M.package.searchers = M.package.loaders
-			M.package.loaders = nil
+		if not m.searchers and m.loaders then
+			m.searchers = m.loaders
+			m.loaders = nil
 		end
 		-- PACKAGE.config --
-		if not M.package.config then -- package.config seems not documented in lua/5.1 manual 
+		if not m.config then -- package.config seems not documented in lua/5.1 manual
 			print("FIXME: missing package.config")
 		end
 		-- PACKAGE.searchpath --
-		if not M.package.searchpath then
+		if not m.searchpath then
 			print("FIXED: missing package.searchpath, workaround!")
 			local error = G.error
 			local io_open = assert( (mods.io or {}).open)
@@ -183,9 +210,9 @@ return function(env)
 					return string.match(str, ((n >= 2) and (".-\n"):rep(n-1) or "").."(.-)\n")
 				end
 			end
-			local _PACKAGE = M.package
+			local _PACKAGE = m
 
-			M.package.searchpath = function(name, path, sep, rep)
+			m.searchpath = function(name, path, sep, rep)
 				sep = sep or '.'
 				rep = rep or string_line(_PACKAGE.config, 1) or '/'
 				--assert(rep == '/')
@@ -206,13 +233,9 @@ return function(env)
 			        return nil -- not found
 			end
 		end
+		M.package = m
 	end
-	for _,k in ipairs({"coroutine", "io", "math", "os", "utf8",}) do
-		local v = G[k]
-		if type(v)=="table" then
-			M[k]=v
-		end
-	end
+
 	--M._VERSION=""
-	return M
+	return M, Mods
 end

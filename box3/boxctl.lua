@@ -5,8 +5,9 @@ local boxctl_class = class("boxctl")
 function boxctl_class:init(env)
 --print("boxctl_class:init(env)", env)
 	assert(env._G and env.package and env.package.loaded)
-	local G = require "uniformapi"({_G=_G._G, package = {loaded = _G.package.loaded}})
+	local G, mods = require "uniformapi"(env._G, env.package.loaded)
 	self.G = G
+	self.mods = mods
 
 	local ro2rw = require "mini.proxy.ro2rw.with-internalregistry"(G)
 	local mkproxies = require "mini.proxy.ro2rw.mkproxies"(G)
@@ -32,11 +33,14 @@ function boxctl_class:init(env)
 		assert(parent.G)
 		self._pubprefix = "_pub_"
 		self._parent = parent ; self.G = parent.G
+		self.mods = mods
 		local pubenv, internal = ro2rw_simple(self, self._pubprefix)	-- create a new empty environment
 		self._pubenv = pubenv		-- the _G inside the box
 		self._internal = internal	-- env function proxies (internal registry)
 		pubenv._G = pubenv		-- the _G._G inside the box
 		self:setup()
+		local _debug_, _debug_internal = ro2rw_simple(self, "_mods_debug_")
+		pubenv.debug = _debug_
 	end
 	function box_class:dostring(txtlua, errorhandler)
 		local f = self.G.load(txtlua, nil, "t", self._pubenv)
@@ -59,6 +63,7 @@ function boxctl_class:init(env)
 			v(self)
 		end
 	end
+	
 end
 
 -- not really used
@@ -80,7 +85,7 @@ function boxctl_class:boximplement(modname) -- method name must be correctly pre
 
 	assert(boxclass.init)
 	for k, v in G.pairs(methods) do
-		if boxclass[k] == nil and G.type(v) == "function" then
+		if k~="init" and boxclass[k] == nil and G.type(v) == "function" then
 			boxclass[k] = v
 		end
 	end

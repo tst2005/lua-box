@@ -2,8 +2,8 @@
 local assert = assert
 local _G=nil
 local print = print
-return function(env, mods)
-	local G = assert(env._G)
+return function(mods)
+	local G = assert(mods._G)
 	if mods == nil then
 		mods = assert(env.package.loaded)
 	end

@@ -17,15 +17,15 @@ local code1 = table.concat({
 		"[[", modcode, "]]",
 	',nil, "t")()'
 }, "")
+assert( x:dostring( code1, print ) == "OK load;nil")
+
 local code2 = table.concat({
-	'local e = {_VERSION="splited env"}',
+	'local e = {_VERSION="customEnv"}',
 	';',
 	'return load(',
 		"[[", modcode, "]]",
 	',nil, "t", e)()'
 }, "")
+assert( x:dostring( code2, print ) == "OK load;customEnv")
 
-print(code1)
-print( x:dostring( code1, print ))
-print(code2)
-print( x:dostring( code2, print ))
+print("OK")

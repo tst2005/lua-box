@@ -34,7 +34,7 @@ function boxctl_class:init(env)
 		self._pubprefix = "_pub_"
 		self._parent = parent ; self.G = parent.G
 		self.mods = mods
-		local pubenv, internal = ro2rw_simple(self, self._pubprefix)	-- create a new empty environment
+		local pubenv, internal = ro2rw_simple(self, assert(self._pubprefix))	-- create a new empty environment
 		self._pubenv = pubenv		-- the _G inside the box
 		self._internal = internal	-- env function proxies (internal registry)
 		pubenv._G = pubenv		-- the _G._G inside the box
@@ -59,7 +59,7 @@ function boxctl_class:init(env)
 	function box_class:setup()
 		local G = self.G
 		for k,v in G.pairs(self._inits) do
-			print("INIT: ", k, v)
+--			print("INIT: ", k, v)
 			v(self)
 		end
 	end

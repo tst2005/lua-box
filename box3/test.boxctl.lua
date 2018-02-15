@@ -1,7 +1,7 @@
 
 local boxctl_class = require"boxctl"
-local G = {_G=_G, package={loaded=_G.package.loaded},}
-local unpack = table.unpack and table.unpack or _G.unpack
+local G = _G
+local table_unpack = assert(table.unpack and table.unpack or _G.unpack)
 
 do
 	local boxctl_inst = boxctl_class(G)
@@ -31,7 +31,7 @@ do
 
 	local err
 	print( x:dostring([[ syntax{error ]], function(x) err=x end), err)
-	print( x:dostring([[ NULL() ]], function(x) err=x end), err)
+	print( x:dostring([[ NonExistantFunction() ]], function(x) err=x end), err)
 end
 
 do
@@ -54,7 +54,7 @@ do
 	print(x:dostring("local c = 0 for k, v in pairs(io) do print(k,v) c=c+1 end return c")) -- ro2rw does NOT support pairs
 	print((x:dostring([[return io._FAKE]]))=="yes")
 
-	print( unpack( x:dostring([[return {"io.stdin", io.stdin}]]) or {} ) )
+	print( table_unpack( x:dostring([[return {"io.stdin", io.stdin}]]) or {} ) )
 end
 
 do
@@ -64,7 +64,7 @@ do
 	boxctl_inst:boximplement("impl.meta")
 	local x = boxctl_inst()
 	x:setup()
-	print(unpack(x:dostring([[return {print,assert,error,pairs,ipairs,_VERSION}]])))
+	print(table_unpack(x:dostring([[return {print,assert,error,pairs,ipairs,_VERSION}]])))
 	print(x:dostring([[return debug.getmetatable]]))
 end
 

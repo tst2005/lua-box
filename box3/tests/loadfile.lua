@@ -7,9 +7,13 @@ local boxctl_inst = boxctl_class(G)
 
 boxctl_inst:boximplement("impl.lua52.loadfile")
 boxctl_inst:setup_callable()
-local x = boxctl_inst()
-x:setup()
+local box = boxctl_inst()
+box:setup()
 
-print( table_unpack( x:dostring([[return {loadfile("loadfile-sample.lua", "t")()}]] )))
-print( table_unpack( x:dostring([[local e = {_VERSION="customEnv"}; return {loadfile("loadfile-sample.lua", "t", e)()}]] )))
+local code = [[return loadfile("loadfile-sample.lua", "t")()]]
+assert( box:dostring(code) == "OK loadfile;nil" )
 
+local code = [[local e = {_VERSION="customEnv"}; return loadfile("loadfile-sample.lua", "t", e)()]]
+assert( box:dostring(code) == "OK loadfile;customEnv")
+
+print("OK")
